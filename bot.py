@@ -1,19 +1,15 @@
 # -*- coding: utf-8 -*-
 from pymongo import MongoClient
 import telepot
-#from os.path import abspath, expanduser
 import time
 import re
-from datetime import datetime
-from datetime import timedelta
+from datetime import datetime, timedelta
 from urllib.request import urlopen
 import json
 import random
 import string
 
 bot = telepot.Bot('222087284:AAGE6LHoKAr1tEIRvtiIqIni7WEo8lAHUio')
-
-#filepath = abspath('moscowtrafficbot_last_update_id.txt')
 
 client = MongoClient('localhost', 27017)
 
@@ -33,9 +29,6 @@ def lastUpdate(key, mode):
         else:
             collTrafficBot.insert_one({"last_update": int(key)})
 
-#last_f = open(filepath)
-#last_update = last_f.read()
-#last_f.close()
 l_upd = lastUpdate(0, 0)
 
 def parseTraffic(regionId):
@@ -165,7 +158,7 @@ def cmdSet(chat_id, text):
     sText = text.replace("/set", "")
     mode, tMode = validateMode(sText)
     if mode == None:
-        te = "Некорректное условие, проверьте\nВерно, например, так: ниже"
+        te = "Некорректное условие, проверьте\nВерно, например, так:\n/set ниже 6 баллов после 17:00"
         try:
             bot.sendMessage(chat_id, te)
         except Exception as t:
@@ -193,7 +186,7 @@ def cmdSet(chat_id, text):
                 level = int(levels[0])
                 if level > 10 or level < 0:
                     try:
-                        te = "Некорректные баллы, проверьте\n Баллы могут быть целым числом от 0 до 10"
+                        te = "Некорректный уровень пробок, проверьте\n Баллы могут быть целым числом от 0 до 10"
                         bot.sendMessage(chat_id, te)
                     except Exception as t:
                         print(t)
@@ -220,7 +213,7 @@ def insertChat(chat_id, mode, level, startTime, finalTime):
         notifies = [{"mode": mode, "level": level, "startTime": startTime, "finalTime": finalTime,"last": "0"}]
         query = {"chat_id": chat_id, "notifies": notifies}
         collTrafficBot.insert_one(query)
-        answers = ["Ок, я сообщу)", "Это его мама, я ему передам", "Отличный выбор, сэр!", "Ок. Почему ботам не платят зарплату :(", "Шутки не будет, но задание принято", "Скажу, так и быть, машина ведь не недвижимостью", "Ок"]
+        answers = ["Ок, я сообщу)", "Это его мама, я передам", "Отличный выбор, сэр!", "Ок. Почему ботам не платят зарплату :(", "Шутки не будет, но задание принято", "Скажу, так и быть, жалко машину", "Ок"]
         answer = answers[random.randint(0,6)]
         try:
             bot.sendMessage(chat_id, answer)
@@ -360,14 +353,9 @@ def getUpdates(u_id, counter):
             cmdHelp(chat_id)
         else:
             noCmd(chat_id, len(text))
-    
-    """last_f = open(filepath, "w")
-    last_f.write(str(u_id))
-    last_f.close()"""
+
     lastUpdate(u_id, 1)
 
-    """global last_update
-    last_update = u_id"""
     global l_upd
     l_upd = u_id
 
