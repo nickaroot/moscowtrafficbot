@@ -320,39 +320,41 @@ def parseCommand(text):
 def getUpdates(u_id, counter):
 
     response = bot.getUpdates(u_id)
-
     for item in response:
         update_id = int(item['update_id'])
         u_id = update_id+1
         message = item['message']
-        text = str(message['text'])
-        chat = message['chat']
-        chat_id = chat['id']
-        time = str(datetime.now())
+        try:
+            text = str(message['text'])
+            chat = message['chat']
+            chat_id = chat['id']
+            time = str(datetime.now())
 
-        print("%s by %i on %s" % (text, chat_id, time))
+            print("%s by %i on %s" % (text, chat_id, time))
 
-        cmd, tCmd = parseCommand(text)
+            cmd, tCmd = parseCommand(text)
 
-        if tCmd != None:
-            cText = text.replace(tCmd, "")
-        else:
-            cText = text
+            if tCmd != None:
+                cText = text.replace(tCmd, "")
+            else:
+                cText = text
 
-        if cmd == "start":
-            cmdStart(chat_id)
-        elif cmd == "set":
-            cmdSet(chat_id, cText)
-        elif cmd == "remove":
-            cmdRemove(chat_id, cText)
-        elif cmd == "removeAll":
-            cmdRemoveAll(chat_id)
-        elif cmd == "notifies":
-            cmdNotifies(chat_id)
-        elif cmd == "help":
-            cmdHelp(chat_id)
-        else:
-            noCmd(chat_id, len(text))
+            if cmd == "start":
+                cmdStart(chat_id)
+            elif cmd == "set":
+                cmdSet(chat_id, cText)
+            elif cmd == "remove":
+                cmdRemove(chat_id, cText)
+            elif cmd == "removeAll":
+                cmdRemoveAll(chat_id)
+            elif cmd == "notifies":
+                cmdNotifies(chat_id)
+            elif cmd == "help":
+                cmdHelp(chat_id)
+            else:
+                noCmd(chat_id, len(text))
+        except KeyError:
+            print("key error")
 
     lastUpdate(u_id, 1)
 
