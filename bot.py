@@ -180,7 +180,8 @@ def cmdSet(chat_id, text):
             else:
                 ftText = stText.replace(finalTime, "")
 
-            levels = [int(s) for s in ftText.split() if s.isdigit()]
+            levels = [int(s) for s in ftText if s.isdigit()]
+            print(levels)
 
             if len(levels) > 0:
                 level = int(levels[0])
